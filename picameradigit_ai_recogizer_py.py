@@ -20,17 +20,14 @@ import datetime
 import argparse
 import imutils
 import time
-import pygame
-import os
 
-from gtts import gTTS
 from time import sleep
 from imutils.video import VideoStream
 from keras.models import load_model
 
 # import CNN model weight
 model = load_model(
-    r'C:\\Users\tbolz\Downloads\\PiCamera-Digit-Recognizer-master\\mnist_trained_model.h5')
+    r'C:\\Users\\tbolz\Downloads\\PiCamera-Digit-Recognizer-master\\mnist_trained_model.h5')
 
 # construct the argument parse and parse the arguments
 # ap = argparse.ArgumentParser()
@@ -77,17 +74,7 @@ def ImagePreProcess(im_orig):
     ans = ans[0].tolist().index(max(ans[0].tolist()))
     print('DNN predicted digit is: ', ans)
 
-    #Voice Feedback
-    """ voice = str(ans)
-    tts = gTTS(text=voice, lang='en')
-    tts.save("answer.mp3")
-    pygame.mixer.init()
-    pygame.mixer.music.load("answer.mp3")
-    pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy() == True:
-        continue
-    pygame.mixer.quit()
-    os.remove("answer.mp3") """
+    
 
 def main():
     # loop over the frames from the video stream
