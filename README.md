@@ -8,4 +8,4 @@ Tutorial: https://www.hackster.io/dhq/ai-digit-recognition-with-picamera-2c017f
 6. pip install keras
 7. pip install opencv-python
 8. pip install imutils
-11. pip install tensorflow
+11. pip install tensorflow (https://stackoverflow.com/questions/38896424/tensorflow-not-found-using-pip)
