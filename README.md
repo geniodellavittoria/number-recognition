@@ -24,18 +24,29 @@ MacOS:
 9. pip3 install tensorflow (https://stackoverflow.com/questions/38896424/tensorflow-not-found-using-pip)
 
 --------------
-#Raspberry Pi
-https://hackernoon.com/raspberry-pi-headless-install-462ccabd75d0
+# Raspberry Pi
+Allgemeine Installationsanleitung:
+* https://hackernoon.com/raspberry-pi-headless-install-462ccabd75d0
 
-Raspbian Stretch LITE: https://www.raspberrypi.org/downloads/raspbian/
+## Betriebssystem
+Raspbian Stretch LITE:
+* https://www.raspberrypi.org/downloads/raspbian/
 
-SSH: https://www.raspberrypi.org/documentation/configuration/wireless/headless.md
+## Verbindung
+SSH:
+* https://www.raspberrypi.org/documentation/configuration/wireless/headless.md
 
-#Static IP configuration:
+## Konfigurationen
+
+Static IP configuration:
+```
 interface eth0
 static ip_address=192.168.1.23/24
 static ip6_address=fd51:42f8:caae:d92e::ff/64
 static routers=192.168.1.1
 static domain_name_servers=192.168.1.1 8.8.8.8 fd51:42f8:caae:d92e::1
+```
 
-Take Photo: raspistill -o testbild.jpg
+## Befehle
+
+Take Photo: `raspistill -o testbild.jpg`
