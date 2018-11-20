@@ -37,7 +37,7 @@ SSH:
 * https://www.raspberrypi.org/documentation/configuration/wireless/headless.md
 
 ## Installation
-
+https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/
 1. `sudo apt-get install python3-pip`
 2. `sudo apt-get install python3-picamera`
 3. `pip3 install numpy` (Version 1.15.4)
@@ -46,7 +46,9 @@ SSH:
 6. `pip3 install keras` (keras-2.2.4 keras-applications-1.0.6 keras-preprocessing-1.0.5)
 7. `pip3 install opencv-python` (opencv-python-3.4.3.18)
 8. `pip3 install imutils` (imutils-0.5.1)
-9. `pip3 install tensorflow` (tensorflow-1.11.0) (Troubleshooting: https://stackoverflow.com/questions/38896424/tensorflow-not-found-using-pip)
+9. ~~`pip3 install tensorflow` (tensorflow-1.11.0) (Troubleshooting: https://stackoverflow.com/questions/38896424/tensorflow-not-found-using-pip)~~
+10. `wget https://github.com/lhelontra/tensorflow-on-arm/releases/download/v1.9.0/tensorflow-1.9.0-cp35-none-linux_armv7l.whl -P /tmp/`
+11. `pip install  /tmp/tensorflow-1.9.0-cp35-none-linux_armv7l.whl`
 
 ## Konfigurationen
 
@@ -63,3 +65,10 @@ static domain_name_servers=192.168.1.1 8.8.8.8 fd51:42f8:caae:d92e::1
 
 Take Photo: `raspistill -o testbild.jpg`
 
+# Troubleshooting Raspberry Pi
+"Import Error: libf77blas.so.3: cannot open shared object file: No such file or directory" -> `sudo apt-get install libatlas-base-dev`
+"ImportError: libopenjp2.so.7: cannot open shared object file: No such file or directory" -> `sudo apt-get install libopenjp2-7`
+"ImportError: libtiff.so.5: cannot open shared object file: No such file or directory" -> `sudo apt install libtiff5`
+"ImportError: libwebp.so.6: cannot open shared object file: No such file or directory" -> `sudo apt install libwebp6`
+"ImportError: libjasper.so.1: cannot open shared object file: No such file or directory" -> `sudo apt install libjasper1`
+"ImportError: libImath-2_2.so.12: cannot open shared object file: No such file or directory" -> `sudo apt install libilmbase-dev`
