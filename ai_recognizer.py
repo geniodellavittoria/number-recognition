@@ -19,10 +19,10 @@ import numpy as np
 
 from time import sleep
 from imutils.video import VideoStream
-from keras.models import load_model
+##from keras.models import load_model
 
 # import CNN model weight
-model = load_model(r'C:\\code\\PREN\\number-recognition\\mnist_trained_model.h5')
+##model = load_model(r'.\\mnist_trained_model.h5')
 croppedImages = []
 
 # construct the argument parse and parse the arguments
@@ -32,7 +32,7 @@ croppedImages = []
 # args = vars(ap.parse_args())
 
 # initialize the video stream and allow the cammera sensor to warmup
-# vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
+#vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
 cap = cv.VideoCapture(0)
 time.sleep(10.0)
 
@@ -41,7 +41,9 @@ def processImage(orig):
     src = cv.imread(name, cv.CV_8UC1)
     img = prepare(src,orig)
     findContours(img,orig)
-    ##for img in croppedImages:
+    for img in croppedImages:
+        print("cropped")
+        #predict(img)
       ##  predict(img)
 
 
@@ -60,7 +62,7 @@ def prepare(img,orig):
     kernel = np.ones((4,4),np.uint8)
     img_gray_u8 = img_as_ubyte(img) 
     ##im_bw = cv.adaptiveThreshold(img_gray_u8, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY , 11, 2)
-    edges = cv.Canny(img_gray_u8,50,150,apertureSize = 7)
+    edges = cv.Canny(img_gray_u8,50,150,apertureSize = 3)
     cv.imshow("sss",edges)
  
     return edges
@@ -101,8 +103,6 @@ def findContours(img,orig):
         cv.putText(orig, shape, (cX, cY), cv.FONT_HERSHEY_SIMPLEX,
             0.5, (255, 255, 255), 2)
         cv.imshow("Image", orig)
-    
-    
 
 def predict(img):
     #cv.imshow("Window", im_bw)
@@ -128,14 +128,18 @@ def main():
         try:
             # grab the frame from the threaded video stream and resize it
             # to have a maximum width of 400 pixels
-        
-            ret, frame = cap.read()
-            frame = imutils.resize(frame, width=400)
             
+            #readimage
+            frame = cv.imread(".\image.png")
+            ##ret, frame = cap.read()
+            frame = imutils.resize(frame, width=400)
             # draw the timestamp on the frame
            
-            cv.imshow("Window", frame)            
+            cv.imshow("Window", frame)   
+            
+            processImage(frame)         
             key = cv.waitKey(1) & 0xFF
+            
             # if the `q` key was pressed, break from the loop
             if key == ord("q"):
                 break
