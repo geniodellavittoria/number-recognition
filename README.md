@@ -64,6 +64,8 @@ static domain_name_servers=192.168.1.1 8.8.8.8 fd51:42f8:caae:d92e::1
 ## Befehle
 
 Take Photo: `raspistill -o testbild.jpg`
+Take Video: `raspivid -o - -t 0 -n -w 600 -h 400 -fps 12 | cvlc -vvv stream:///dev/stdin --sout '#rtp{sdp=rtsp://:8554/}' :demux=h264`
+http://www.raspberry-projects.com/pi/pi-hardware/raspberry-pi-camera/streaming-video-using-vlc-player
 
 # Troubleshooting Raspberry Pi
 "Import Error: libf77blas.so.3: cannot open shared object file: No such file or directory" -> `sudo apt-get install libatlas-base-dev`
