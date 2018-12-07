@@ -26,14 +26,13 @@ from imutils.video import VideoStream
 croppedImages = []
 
 # construct the argument parse and parse the arguments
-# ap = argparse.ArgumentParser()
-# ap.add_argument("-p", "--picamera", type=int, default=-1,
-#                 help="whether or not the Raspberry Pi camera should be used")
-# args = vars(ap.parse_args())
+ap = argparse.ArgumentParser()
+ap.add_argument("-p", "--picamera", type=int, default=-1,
+                 help="whether or not the Raspberry Pi camera should be used")
+args = vars(ap.parse_args())
 
-# initialize the video stream and allow the cammera sensor to warmup
-#vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
-cap = cv.VideoCapture(0)
+#initialize the video stream and allow the cammera sensor to warmup
+vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
 time.sleep(10.0)
 
 def processImage(orig):
@@ -60,9 +59,9 @@ def crop(x,y,w,h,img):
 
 def prepare(img,orig):
     kernel = np.ones((4,4),np.uint8)
-    img_gray_u8 = img_as_ubyte(img) 
+    ##img_gray_u8 = img_as_ubyte(img) 
     ##im_bw = cv.adaptiveThreshold(img_gray_u8, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY , 11, 2)
-    edges = cv.Canny(img_gray_u8,50,150,apertureSize = 3)
+    edges = cv.Canny(img,50,150,apertureSize = 3)
     cv.imshow("sss",edges)
  
     return edges
@@ -85,7 +84,7 @@ def detect(cont, orig):
 def findContours(img,orig):
     gray_image = cv.convertScaleAbs(img)
     edged = cv.Canny(gray_image, 30, 200)
-    img, contours, hierarchy = cv.findContours(edged.copy(), cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    img, contours, hierarchy = cv.findContours(edged, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     cnts = sorted(contours, key = cv.contourArea, reverse = True)[:10]
     screenCnt = None
     for c in cnts:
@@ -130,8 +129,8 @@ def main():
             # to have a maximum width of 400 pixels
             
             #readimage
-            frame = cv.imread(".\image.png")
-            ##ret, frame = cap.read()
+            ##frame = cv.imread("./image.png")
+            ret, frame = vs.read()
             frame = imutils.resize(frame, width=400)
             # draw the timestamp on the frame
            
