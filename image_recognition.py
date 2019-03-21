@@ -1,4 +1,3 @@
-
 # 1. read image
 # 2. convert to gray scale
 # 3. convert to uint8 range
@@ -8,8 +7,6 @@
 # 7. Feed into trained neural network
 # 8. print answer
 
-#from skimage.io import imread
-from skimage import img_as_ubyte  # convert float to uint8
 import cv2 as cv
 import datetime
 import argparse
@@ -19,10 +16,7 @@ import numpy as np
 
 from time import sleep
 from imutils.video import VideoStream
-##from keras.models import load_model
 
-# import CNN model weight
-##model = load_model(r'.\\mnist_trained_model.h5')
 croppedImages = []
 
 # construct the argument parse and parse the arguments
@@ -35,15 +29,7 @@ args = vars(ap.parse_args())
 vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
 time.sleep(10.0)
 
-def processImage(orig):
-    name = save(orig)
-    src = cv.imread(name, cv.CV_8UC1)
-    img = prepare(src,orig)
-    findContours(img,orig)
-    for img in croppedImages:
-        print("cropped")
-        #predict(img)
-      ##  predict(img)
+
 
 
 def save(img):
@@ -76,7 +62,7 @@ def detect(cont, orig):
     # a square will have an aspect ratio that is approximately
     # equal to one, otherwise, the shape is a rectangle
     shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
-    if shape == "rectangle":
+    if shape == "square":
         crop(x,y,w,h,orig)
 
     return shape
@@ -103,39 +89,31 @@ def findContours(img,orig):
             0.5, (255, 255, 255), 2)
         cv.imshow("Image", orig)
 
-def predict(img):
-    #cv.imshow("Window", im_bw)
-    # resize using opencv
-    img_resized = cv.resize(img, (28, 28))
-    ############################################################
-    # invert image
-    im_gray_invert = 255 - img_resized
-    #cv.imshow("Window", im_gray_invert)
-    ####################################
-    im_final = im_gray_invert.reshape(1, 28, 28, 1)
-    # the below output is a array of possibility of respective digit
-    ans = model.predict(im_final)
-    print(ans)
-    # choose the digit with greatest possibility as predicted dight
-    ans = ans[0].tolist().index(max(ans[0].tolist()))
-    print('DNN predicted digit is: ', ans)
 
 
-def main():
+def processImage(orig):
+    name = save(orig)
+    src = cv.imread(name, cv.CV_8UC1)
+    img = prepare(src,orig)
+    findContours(img,orig)
+    for img in croppedImages:
+        print("cropped")
+        #predict(img)
+      ##  predict(img)
+
+def img():
+    frame = cv.imread("./image.png")
+    processImage(frame)
+
+def pycam():
     # loop over the frames from the video stream
     while True:
         try:
-            # grab the frame from the threaded video stream and resize it
-            # to have a maximum width of 400 pixels
-            
             #readimage
-            ##frame = cv.imread("./image.png")
+            
             ret, frame = vs.read()
             frame = imutils.resize(frame, width=400)
-            # draw the timestamp on the frame
-           
             cv.imshow("Window", frame)   
-            
             processImage(frame)         
             key = cv.waitKey(1) & 0xFF
             
@@ -144,16 +122,18 @@ def main():
                 break
                 # do a bit of cleanup
                 cv.destroyAllWindows()
-                cap.stop()
+                vs.stop()
             elif key == ord("c"): 
                 processImage(frame)     
                 pass
         except KeyboardInterrupt:
             # do a bit of cleanup
             cv.destroyAllWindows()
-            cap.stop()
+            vs.stop()
 
+def main():
+    # pycam()
+    img()
 
 if __name__ == "__main__":
     main()
-
