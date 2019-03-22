@@ -68,9 +68,10 @@ Take Video: `raspivid -o - -t 0 -n -w 600 -h 400 -fps 12 | cvlc -vvv stream:///d
 http://www.raspberry-projects.com/pi/pi-hardware/raspberry-pi-camera/streaming-video-using-vlc-player
 
 # Troubleshooting Raspberry Pi
-"Import Error: libf77blas.so.3: cannot open shared object file: No such file or directory" -> `sudo apt-get install libatlas-base-dev`
-"ImportError: libopenjp2.so.7: cannot open shared object file: No such file or directory" -> `sudo apt-get install libopenjp2-7`
-"ImportError: libtiff.so.5: cannot open shared object file: No such file or directory" -> `sudo apt install libtiff5`
-"ImportError: libwebp.so.6: cannot open shared object file: No such file or directory" -> `sudo apt install libwebp6`
-"ImportError: libjasper.so.1: cannot open shared object file: No such file or directory" -> `sudo apt install libjasper1`
-"ImportError: libImath-2_2.so.12: cannot open shared object file: No such file or directory" -> `sudo apt install libilmbase-dev`
+- "Import Error: libf77blas.so.3: cannot open shared object file: No such file or directory" -> `sudo apt-get install libatlas-base-dev`
+- "ImportError: libopenjp2.so.7: cannot open shared object file: No such file or directory" -> `sudo apt-get install libopenjp2-7`
+- "ImportError: libtiff.so.5: cannot open shared object file: No such file or directory" -> `sudo apt install libtiff5`
+- "ImportError: libwebp.so.6: cannot open shared object file: No such file or directory" -> `sudo apt install libwebp6`
+- "ImportError: libjasper.so.1: cannot open shared object file: No such file or directory" -> `sudo apt install libjasper1`
+- "ImportError: libImath-2_2.so.12: cannot open shared object file: No such file or directory" -> `sudo apt install libilmbase-dev`
+- "ImportError: libQtGui.so.4: cannot open shared object file: No such file or directory" -> `sudo apt-get install -y libqtgui4`
