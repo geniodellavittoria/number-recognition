@@ -74,3 +74,4 @@ http://www.raspberry-projects.com/pi/pi-hardware/raspberry-pi-camera/streaming-v
 - "ImportError: libwebp.so.6: cannot open shared object file: No such file or directory" -> `sudo apt install libwebp6`
 - "ImportError: libjasper.so.1: cannot open shared object file: No such file or directory" -> `sudo apt install libjasper1`
 - "ImportError: libImath-2_2.so.12: cannot open shared object file: No such file or directory" -> `sudo apt install libilmbase-dev`
+- "ImportError: libQtGui.so.4: cannot open shared object file: No such file or directory" -> `sudo apt-get install -y libqtgui4`
