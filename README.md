@@ -75,3 +75,4 @@ http://www.raspberry-projects.com/pi/pi-hardware/raspberry-pi-camera/streaming-v
 - "ImportError: libjasper.so.1: cannot open shared object file: No such file or directory" -> `sudo apt install libjasper1`
 - "ImportError: libImath-2_2.so.12: cannot open shared object file: No such file or directory" -> `sudo apt install libilmbase-dev`
 - "ImportError: libQtGui.so.4: cannot open shared object file: No such file or directory" -> `sudo apt-get install -y libqtgui4`
+- "ImportError: libQtTest.so.4: cannot open shared object file: No such file or directory" -> `sudo apt install libqt4-test`
