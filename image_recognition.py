@@ -99,12 +99,13 @@ def img():
 def pycam():
     # loop over the frames from the video stream
     # initialize the video stream and allow the cammera sensor to warmup
-    vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
+
+    cap = cv.VideoCapture(0)
     time.sleep(10.0)
     while True:
         try:
             # readimage
-            ret, frame = vs.read()
+            frame = cap.read()[1]
             frame = imutils.resize(frame, width=300)
             cv.imshow("Window", frame)
             key = cv.waitKey(1) & 0xFF
@@ -113,15 +114,15 @@ def pycam():
             if key == ord("q"):
                 break
                 # do a bit of cleanup
+                cap.release()
                 cv.destroyAllWindows()
-                vs.stop()
             elif key == ord("c"):
                 processImage(frame)
                 pass
         except KeyboardInterrupt:
             # do a bit of cleanup
+            cap.release()
             cv.destroyAllWindows()
-            vs.stop()
 
 
 def main():
