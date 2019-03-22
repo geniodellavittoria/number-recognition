@@ -6,7 +6,7 @@ def main():
     # getCargo
     # ImageCapturing
     # imageProcessing
-    # prediction
+    prediction.start()
     # stop
     print("not implemented yet")
 
