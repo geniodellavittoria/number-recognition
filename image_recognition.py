@@ -4,8 +4,6 @@ import argparse
 import time
 import numpy as np
 import logging as log
-import matplotlib as mpl
-from matplotlib import pyplot as plt
 from time import sleep
 import imutils
 from imutils import contours
