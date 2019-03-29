@@ -31,7 +31,7 @@ def crop(x, y, w, h, img):
     croppedImages.append(cropped)
 
 
-def detect(cont, orig):
+def detectShape(cont, orig):
     # compute the bounding box of the contour and use the
     # bounding box to compute the aspect ratio
     peri = cv.arcLength(cont, True)
@@ -44,7 +44,10 @@ def detect(cont, orig):
         # equal to one, otherwise, the shape is a rectangle
         shape = "square" if ar >= 0.95 and ar <= 1.15 else "rectangle"
         if shape == "square":
-            return shape
+            subimg = orig[y: y + h, x: x + w, :]
+            cv.imshow("subImg", subimg)
+            cv.imwrite("subimg.png", subimg)
+            return subimg
         log.debug(ar)
         return None
 
@@ -56,14 +59,8 @@ def findContours(edged, orig):
     cnts = imutils.grab_contours(cnts)
     for c in cnts:
         # detect the name of the shape
-        shape = detect(c, orig)
-        if shape != None:
-            # then draw the contours and the name of the shape on the image
-            cv.drawContours(orig, [c], -1, (0, 255, 0), 2)
-            # get coordinates to create subimg
-            (x, y, w, h) = cv.boundingRect(c)
-            subImg = orig[y: y + h, x: x + w, :]
-            cv.imshow("subImg",subImg)
+        detectShape(c, orig)
+        cv.drawContours(orig, [c], -1, (0, 255, 0), 2)
 
 
 def processImage(orig):
