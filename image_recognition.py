@@ -38,10 +38,11 @@ def detect(cont, orig):
     approx = cv.approxPolyDP(cont, 0.04 * peri, True)
     (x, y, w, h) = cv.boundingRect(approx)
     ar = w / float(h)
+    print(ar)
     if len(approx) == 4:
         # a square will have an aspect ratio that is approximately
         # equal to one, otherwise, the shape is a rectangle
-        shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
+        shape = "square" if ar >= 0.95 and ar <= 1.15 else "rectangle"
         if shape == "square":
             return shape
         log.debug(ar)
@@ -50,9 +51,9 @@ def detect(cont, orig):
 
 def findContours(edged, orig):
     cv.threshold(edged, 60, 255, cv.THRESH_BINARY)[1]
+    edged = cv.GaussianBlur( edged, (5,5),0)
     cnts = cv.findContours(edged, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
-
     for c in cnts:
         # detect the name of the shape
         shape = detect(c, orig)
@@ -75,7 +76,7 @@ def processImage(orig):
 
 def img():
     log.debug("start to read img")
-    image = cv.imread("test_img.png")
+    image = cv.imread("image_test_2.png")
     if image is None:
         log.error("img is null")
     log.debug("img loaded succesfully")
@@ -100,7 +101,7 @@ def pycam():
     # loop over the frames from the video stream
     # initialize the video stream and allow the cammera sensor to warmup
 
-    cap = cv.VideoCapture(0)
+    cap = cv.VideoCapture(-1)
     time.sleep(10.0)
     while True:
         try:
@@ -128,8 +129,8 @@ def pycam():
 def main():
     log.basicConfig(level=log.DEBUG)
     log.info("program started")
-    pycam()
-    # img()
+    # pycam()
+    img()
 
 
 if __name__ == "__main__":
