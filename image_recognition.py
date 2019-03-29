@@ -51,7 +51,7 @@ def detect(cont, orig):
 
 def findContours(edged, orig):
     cv.threshold(edged, 60, 255, cv.THRESH_BINARY)[1]
-    edged = cv.GaussianBlur( edged, (5,5),0)
+    edged = cv.GaussianBlur(edged, (5, 5), 0)
     cnts = cv.findContours(edged, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     for c in cnts:
@@ -60,9 +60,10 @@ def findContours(edged, orig):
         if shape != None:
             # then draw the contours and the name of the shape on the image
             cv.drawContours(orig, [c], -1, (0, 255, 0), 2)
-            c = c.astype("float")
-            c = c.astype("int")
-            cv.imshow("Image", orig)
+            # get coordinates to create subimg
+            (x, y, w, h) = cv.boundingRect(c)
+            subImg = orig[y: y + h, x: x + w, :]
+            cv.imshow("subImg",subImg)
 
 
 def processImage(orig):
