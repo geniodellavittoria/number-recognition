@@ -9,11 +9,7 @@ import imutils
 from imutils import contours
 from imutils.video import VideoStream
 
-# construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-p", "--picamera", type=int, default=-1,
-                help="whether or not the Raspberry Pi camera should be used")
-args = vars(ap.parse_args())
+cap = cv.VideoCapture('video.h264')
 
 
 def detectShape(cont, orig):
@@ -23,13 +19,17 @@ def detectShape(cont, orig):
     approx = cv.approxPolyDP(cont, 0.04 * peri, True)
     (x, y, w, h) = cv.boundingRect(approx)
     ar = w / float(h)
-    print(ar)
     if len(approx) == 4:
         # a square will have an aspect ratio that is approximately
         # equal to one, otherwise, the shape is a rectangle
         shape = "square" if ar >= 0.95 and ar <= 1.15 else "rectangle"
         if shape == "square":
-            cv.drawContours(orig, [cont], -1, (0, 255, 0), 2)
+            if w > 10 and h > 10:
+                log.info("signal found with w: " + str(w) + "  h: str(h)")
+                cv.drawContours(orig, [cont], -1, (0, 255, 0), 2)
+            else:
+                log.info("to small square found")
+                cv.drawContours(orig, [cont], -1, (0, 0, 255), 2)
     else:
         cv.drawContours(orig, [cont], -1, (0, 0, 255), 2)
     return orig
@@ -68,17 +68,16 @@ def cam():
     # loop over the frames from the video stream
     # initialize the video stream and allow the cammera sensor to warmup
 
-    cap = cv.VideoCapture(-1)
-    time.sleep(10.0)
-    while True:
+    while cap.isOpened():
         try:
             # readimage
             frame = cap.read()[1]
-            frame = imutils.resize(frame, width=300)
             if frame is None:
                 log.error("no frame")
+                cleanup()
+            frame = imutils.resize(frame, width=300)
             image = findContours(frame.copy())
-            # cv.imshow("el Image", image)
+            cv.imshow("el Image", image)
             key = cv.waitKey(1) & 0xFF
 
             # if the `q` key was pressed, break from the loop
@@ -88,9 +87,12 @@ def cam():
                 cap.release()
                 cv.destroyAllWindows()
         except KeyboardInterrupt:
-            # do a bit of cleanup
-            cap.release()
-            cv.destroyAllWindows()
+            cleanup()
+
+
+def cleanup():
+    cap.release()
+    cv.destroyAllWindows()
 
 
 def main():
