@@ -86,6 +86,8 @@ def cam():
                 # do a bit of cleanup
                 cap.release()
                 cv.destroyAllWindows()
+            if key == ord("p"):
+                cv.waitKey(0)
         except KeyboardInterrupt:
             cleanup()
 
