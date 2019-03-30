@@ -78,7 +78,7 @@ def cam():
             if frame is None:
                 log.error("no frame")
             image = findContours(frame.copy())
-            cv.imshow("el Image", image)
+            # cv.imshow("el Image", image)
             key = cv.waitKey(1) & 0xFF
 
             # if the `q` key was pressed, break from the loop
