@@ -38,7 +38,9 @@ def detectShape(cont, orig):
 def findContours(frame):
     frame_resized = imutils.resize(frame.copy(), width=500)
     edged = cv.Canny(frame_resized, 100, 200)
-    threshd = cv.threshold(edged, 60, 255, cv.THRESH_BINARY)[1]
+
+    threshd = cv.threshold(edged,
+                           128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)[1]
     edged = cv.GaussianBlur(threshd, (5, 5), 0)
     cnts = cv.findContours(edged, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
