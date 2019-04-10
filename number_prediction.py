@@ -25,12 +25,9 @@ def start(img):
     im_final = sub_bw.reshape(1, 28, 28, 1)
 
     ans = model.predict(im_final)
-    print(ans)
     # choose the digit with greatest possibility as predicted dight
     ans = ans[0].tolist().index(max(ans[0].tolist()))
-    print('DNN predicted digit is: ', ans)
-
-    # cv.waitKey(0)
+    print('predicted digit is: ', ans)
 
 
 if __name__ == "__main__":

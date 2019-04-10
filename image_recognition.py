@@ -8,8 +8,14 @@ from time import sleep
 import imutils
 from imutils import contours
 from imutils.video import VideoStream
+import prediction
+import os
 
 cap = cv.VideoCapture('video.h264')
+
+
+def predictNumber(subImg):
+    prediction.start(subImg)
 
 
 def detectShape(cont, orig):
@@ -26,9 +32,12 @@ def detectShape(cont, orig):
         if shape == "square":
             if w > 10 and h > 10:
                 log.info("signal found with w: " + str(w) + "  h: str(h)")
+
+                cropped = orig[y:y+h, x:x+w]
+                predictNumber(cropped)
                 cv.drawContours(orig, [cont], -1, (0, 255, 0), 2)
             else:
-                log.info("to small square found")
+                log.info("too small square found")
                 cv.drawContours(orig, [cont], -1, (0, 0, 255), 2)
     else:
         cv.drawContours(orig, [cont], -1, (0, 0, 255), 2)
@@ -39,22 +48,30 @@ def findContours(frame):
     frame_resized = imutils.resize(frame.copy(), width=500)
     edged = cv.Canny(frame_resized, 100, 200)
 
-    threshd = cv.threshold(edged,
-                           128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)[1]
-    edged = cv.GaussianBlur(threshd, (5, 5), 0)
+    edged = cv.GaussianBlur(edged, (5, 5), 0)
     cnts = cv.findContours(edged, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
+    cv.imshow("edged", edged)
     for c in cnts:
         # detect the name of the shape
         frame_resized = detectShape(c, frame_resized)
     return frame_resized
 
 
-def img():
-    log.debug("start to read img")
-    image = cv.imread("image_test_2.png")
+def imgDir():
+    rootdir = 'images/'
+
+    for subdir, dirs, files in os.walk(rootdir):
+        for file in files:
+            img(rootdir, file)
+
+
+def img(rootdir, file):
+    log.debug('start to read img ' + file)
+    image = cv.imread(rootdir + file)
     if image is None:
         log.error("img is null")
+        quit()
     log.debug("img loaded succesfully")
 
     log.debug("start contour detection")
@@ -102,8 +119,9 @@ def cleanup():
 def main():
     log.basicConfig(level=log.DEBUG)
     log.info("program started")
-    cam()
-    # img()
+    # cam()
+    img("", "nr_6_schwarz.jpg")
+    # imgDir()
 
 
 if __name__ == "__main__":
