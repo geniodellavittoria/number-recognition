@@ -46,9 +46,10 @@ def detectShape(cont, orig):
 
 def findContours(frame):
     frame_resized = imutils.resize(frame.copy(), width=500)
-    edged = cv.Canny(frame_resized, 100, 200)
+    canny = cv.Canny(frame_resized, 100, 200)
 
-    edged = cv.GaussianBlur(edged, (5, 5), 0)
+    edged = cv.GaussianBlur(canny, (5, 5), 0)
+
     cnts = cv.findContours(edged, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     cv.imshow("edged", edged)
@@ -120,7 +121,7 @@ def main():
     log.basicConfig(level=log.DEBUG)
     log.info("program started")
     # cam()
-    img("", "nr_6_schwarz.jpg")
+    img("", "images/image_4_weiss.png")
     # imgDir()
 
 
