@@ -11,7 +11,7 @@ from imutils.video import VideoStream
 import prediction
 import os
 
-cap = cv.VideoCapture('video.h264')
+cap = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_20_ss_auto.h264')
 
 
 def predictNumber(subImg):
@@ -22,20 +22,31 @@ def detectShape(cont, orig):
     # compute the bounding box of the contour and use the
     # bounding box to compute the aspect ratio
     peri = cv.arcLength(cont, True)
-    approx = cv.approxPolyDP(cont, 0.04 * peri, True)
+    approx = cv.approxPolyDP(cont, 0.02*peri, True)
     (x, y, w, h) = cv.boundingRect(approx)
     ar = w / float(h)
     if len(approx) == 4:
         # a square will have an aspect ratio that is approximately
         # equal to one, otherwise, the shape is a rectangle
-        shape = "square" if ar >= 0.95 and ar <= 1.15 else "rectangle"
+        shape = "square" if ar >= 0.95 and ar <= 1.1 else "rectangle"
         if shape == "square":
-            if w > 10 and h > 10:
-                log.info("signal found with w: " + str(w) + "  h: str(h)")
+            if w > 15 and h > 15:
+                log.info("signal found with w: " + str(w) + "  h: " + str(h))
+                log.info("and ar:"+str(ar)+" x:"+str(x)+" y:"+str(y))
 
-                cropped = orig[y:y+h, x:x+w]
-                predictNumber(cropped)
-                cv.drawContours(orig, [cont], -1, (0, 255, 0), 2)
+                area = cv.contourArea(cont)
+                hullArea = cv.contourArea(cv.convexHull(cont))
+                solidity = area / float(hullArea)
+                log.info(solidity)
+                if solidity > 0.6:
+                    cropped = orig[y:y+h, x:x+w]
+                    predictNumber(cropped)
+                    cv.drawContours(orig, [cont], -1, (0, 255, 0), 2)
+                    cv.imshow("with green lines", orig)
+                    cv.waitKey(0)
+                else:
+                    log.info("not square alike")
+                    cv.drawContours(orig, [cont], -1, (255, 0, 0), 2)
             else:
                 log.info("too small square found")
                 cv.drawContours(orig, [cont], -1, (0, 0, 255), 2)
@@ -46,13 +57,17 @@ def detectShape(cont, orig):
 
 def findContours(frame):
     frame_resized = imutils.resize(frame.copy(), width=500)
-    canny = cv.Canny(frame_resized, 100, 200)
+    grayimg = cv.cvtColor(frame_resized, cv.COLOR_BGR2GRAY)
+    blurred = cv.GaussianBlur(grayimg, (7, 7), 0)
+    # high_thresh, thresh_im = cv.threshold(
+    #     grayimg, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
+    # lowThresh = 0.6*high_thresh
 
-    edged = cv.GaussianBlur(canny, (5, 5), 0)
-
-    cnts = cv.findContours(edged, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    cv.imshow("gray", grayimg)
+    canny = cv.Canny(blurred, 100, 200)
+    cnts = cv.findContours(canny, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
-    cv.imshow("edged", edged)
+    cv.imshow("closed", canny)
     for c in cnts:
         # detect the name of the shape
         frame_resized = detectShape(c, frame_resized)
@@ -95,7 +110,6 @@ def cam():
             if frame is None:
                 log.error("no frame")
                 cleanup()
-            frame = imutils.resize(frame, width=300)
             image = findContours(frame.copy())
             cv.imshow("el Image", image)
             key = cv.waitKey(1) & 0xFF
@@ -120,8 +134,8 @@ def cleanup():
 def main():
     log.basicConfig(level=log.DEBUG)
     log.info("program started")
-    # cam()
-    img("", "images/image_4_weiss.png")
+    cam()
+    #img("", "images/image_4_weiss.png")
     # imgDir()
 
 
