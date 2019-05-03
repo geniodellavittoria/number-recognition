@@ -1,24 +1,21 @@
-import cv2 as cv
-import datetime
-import argparse
-import time
-import numpy as np
+
+"""signal detection"""
 import logging as log
-from time import sleep
-import imutils
-from imutils import contours
-from imutils.video import VideoStream
-import prediction
 import os
+import cv2 as cv
+from imutils import resize, grab_contours
+import prediction
 
-cap = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_20_ss_auto.h264')
+CAP = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_30_ss_auto.h264')
 
 
-def predictNumber(subImg):
-    prediction.start(subImg)
+def predict_number(sub_img):
+    """calls prediction class to predict the number"""
+    prediction.start(sub_img)
 
 
-def detectShape(cont, orig):
+def detect_shape(cont, orig):
+    """detects the square and crops it"""
     # compute the bounding box of the contour and use the
     # bounding box to compute the aspect ratio
     peri = cv.arcLength(cont, True)
@@ -31,16 +28,16 @@ def detectShape(cont, orig):
         shape = "square" if ar >= 0.95 and ar <= 1.1 else "rectangle"
         if shape == "square":
             if w > 15 and h > 15:
-                log.info("signal found with w: " + str(w) + "  h: " + str(h))
-                log.info("and ar:"+str(ar)+" x:"+str(x)+" y:"+str(y))
+                log.info("signal found with w: %s  h: %s", w, h)
+                log.info("and ar:%s x:%s y:%s", ar, x, y)
 
                 area = cv.contourArea(cont)
-                hullArea = cv.contourArea(cv.convexHull(cont))
-                solidity = area / float(hullArea)
+                hull_area = cv.contourArea(cv.convexHull(cont))
+                solidity = area / float(hull_area)
                 log.info(solidity)
                 if solidity > 0.6:
                     cropped = orig[y:y+h, x:x+w]
-                    predictNumber(cropped)
+                    predict_number(cropped)
                     cv.drawContours(orig, [cont], -1, (0, 255, 0), 2)
                     cv.imshow("with green lines", orig)
                     cv.waitKey(0)
@@ -55,8 +52,9 @@ def detectShape(cont, orig):
     return orig
 
 
-def findContours(frame):
-    frame_resized = imutils.resize(frame.copy(), width=500)
+def find_contours(frame):
+    """finds the contours in a frame"""
+    frame_resized = resize(frame.copy(), width=500)
     grayimg = cv.cvtColor(frame_resized, cv.COLOR_BGR2GRAY)
     blurred = cv.GaussianBlur(grayimg, (7, 7), 0)
     # high_thresh, thresh_im = cv.threshold(
@@ -65,25 +63,26 @@ def findContours(frame):
 
     cv.imshow("gray", grayimg)
     canny = cv.Canny(blurred, 100, 200)
-    cnts = cv.findContours(canny, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    cnts = imutils.grab_contours(cnts)
+    contours = cv.findContours(canny, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours = grab_contours(contours)
     cv.imshow("closed", canny)
-    for c in cnts:
-        # detect the name of the shape
-        frame_resized = detectShape(c, frame_resized)
+    for contour in contours:
+        frame_resized = detect_shape(contour, frame_resized)
     return frame_resized
 
 
-def imgDir():
+def img_dir():
+    """directory with images is an input"""
     rootdir = 'images/'
 
-    for subdir, dirs, files in os.walk(rootdir):
+    for files in os.walk(rootdir):
         for file in files:
             img(rootdir, file)
 
 
 def img(rootdir, file):
-    log.debug('start to read img ' + file)
+    """image is an input"""
+    log.debug("start to read img %s", file)
     image = cv.imread(rootdir + file)
     if image is None:
         log.error("img is null")
@@ -91,7 +90,7 @@ def img(rootdir, file):
     log.debug("img loaded succesfully")
 
     log.debug("start contour detection")
-    image = findContours(image)
+    image = find_contours(image)
     cv.imshow("frame", image)
     log.debug("finished contour detection")
 
@@ -100,26 +99,22 @@ def img(rootdir, file):
 
 
 def cam():
-    # loop over the frames from the video stream
-    # initialize the video stream and allow the cammera sensor to warmup
-
-    while cap.isOpened():
+    """use when camera/video is input"""
+    while CAP.isOpened():
         try:
             # readimage
-            frame = cap.read()[1]
+            frame = CAP.read()[1]
             if frame is None:
                 log.error("no frame")
                 cleanup()
-            image = findContours(frame.copy())
+            image = find_contours(frame.copy())
             cv.imshow("el Image", image)
             key = cv.waitKey(1) & 0xFF
 
             # if the `q` key was pressed, break from the loop
             if key == ord("q"):
+                cleanup()
                 break
-                # do a bit of cleanup
-                cap.release()
-                cv.destroyAllWindows()
             if key == ord("p"):
                 cv.waitKey(0)
         except KeyboardInterrupt:
@@ -127,16 +122,18 @@ def cam():
 
 
 def cleanup():
-    cap.release()
+    """cleanup"""
+    CAP.release()
     cv.destroyAllWindows()
 
 
 def main():
+    """main"""
     log.basicConfig(level=log.DEBUG)
     log.info("program started")
     cam()
     #img("", "images/image_4_weiss.png")
-    # imgDir()
+    # img_dir()
 
 
 if __name__ == "__main__":
