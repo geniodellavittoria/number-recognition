@@ -5,8 +5,10 @@ import os
 import cv2 as cv
 from imutils import resize, grab_contours
 import prediction
+from videocaptureasync import VideoCaptureAsync
 
-CAP = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_30_ss_auto.h264')
+VID = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_30_ss_auto.h264')
+CAP = VideoCaptureAsync(0)
 
 
 def predict_number(sub_img):
@@ -98,12 +100,38 @@ def img(rootdir, file):
     cv.waitKey(0)
 
 
-def cam():
-    """use when camera/video is input"""
-    while CAP.isOpened():
+def video():
+    """use when video is input"""
+    while VID.isOpened():
         try:
             # readimage
-            frame = CAP.read()[1]
+            frame = VID.read()[1]
+            if frame is None:
+                log.error("no frame")
+                cleanup()
+            image = find_contours(frame.copy())
+            cv.imshow("el Image", image)
+            key = cv.waitKey(1) & 0xFF
+
+            # if the `q` key was pressed, break from the loop
+            if key == ord("q"):
+                cleanup()
+                break
+            if key == ord("p"):
+                cv.waitKey(0)
+        except KeyboardInterrupt:
+            cleanup()
+
+
+def cam():
+    """use when camera is input"""
+    CAP.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
+    CAP.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
+    CAP.start()
+    while True:
+        try:
+            # readimage
+            _, frame = CAP.read()
             if frame is None:
                 log.error("no frame")
                 cleanup()
@@ -123,7 +151,7 @@ def cam():
 
 def cleanup():
     """cleanup"""
-    CAP.release()
+    VID.release()
     cv.destroyAllWindows()
 
 
@@ -131,7 +159,8 @@ def main():
     """main"""
     log.basicConfig(level=log.DEBUG)
     log.info("program started")
-    cam()
+    video()
+    # cam()
     #img("", "images/image_4_weiss.png")
     # img_dir()
 
