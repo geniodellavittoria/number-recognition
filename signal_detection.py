@@ -3,12 +3,14 @@
 import logging as log
 import os
 import cv2 as cv
+import numpy as np
+from skimage import measure
 from imutils import resize, grab_contours
 import prediction
 from videocaptureasync import VideoCaptureAsync
 
 VID = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_30_ss_auto.h264')
-CAP = VideoCaptureAsync(0)
+CAP = VideoCaptureAsync('C:/Users/tbolz/Desktop/videos/video_40_ss_auto.h264')
 
 
 def predict_number(sub_img):
@@ -109,8 +111,9 @@ def video():
             if frame is None:
                 log.error("no frame")
                 cleanup()
-            image = find_contours(frame.copy())
-            cv.imshow("el Image", image)
+            # image = find_contours(frame.copy())
+            # cv.imshow("el Image", image)
+            detect_portal(frame.copy())
             key = cv.waitKey(1) & 0xFF
 
             # if the `q` key was pressed, break from the loop
@@ -125,13 +128,12 @@ def video():
 
 def cam():
     """use when camera is input"""
-    CAP.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
-    CAP.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
     CAP.start()
     while True:
         try:
             # readimage
             _, frame = CAP.read()
+            log.error(frame)
             if frame is None:
                 log.error("no frame")
                 cleanup()
@@ -163,6 +165,38 @@ def main():
     # cam()
     #img("", "images/image_4_weiss.png")
     # img_dir()
+
+
+def detect_portal(frame):
+    frame_resized = resize(frame.copy(), width=500)
+    grayimg = cv.cvtColor(frame_resized, cv.COLOR_BGR2GRAY)
+    blurred = cv.GaussianBlur(grayimg, (7, 7), 0)
+    thresh = cv.threshold(blurred, 200, 255, cv.THRESH_BINARY)[1],
+    cv.waitKey(0)
+    thresh = cv.erode(thresh, None, iterations=2)
+    thresh = cv.dilate(thresh, None, iterations=4)
+    # perform a connected component analysis on the thresholded
+    # image, then initialize a mask to store only the "large"
+    # components
+    labels = measure.label(thresh, neighbors=8, background=0)
+    mask = np.zeros(thresh.shape, dtype="uint8")
+
+    # loop over the unique components
+    for label in np.unique(labels):
+            # if this is the background label, ignore it
+        if label == 0:
+            continue
+
+        # otherwise, construct the label mask and count the
+        # number of pixels
+        labelMask = np.zeros(thresh.shape, dtype="uint8")
+        labelMask[labels == label] = 255
+        numPixels = cv.countNonZero(labelMask)
+
+        # if the number of pixels in the component is sufficiently
+        # large, then add it to our mask of "large blobs"
+        if numPixels > 300:
+            mask = cv.add(mask, labelMask)
 
 
 if __name__ == "__main__":
