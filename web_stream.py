@@ -1,6 +1,7 @@
 # file: videocaptureasync.py
 import logging
 import socketserver
+import logging as log
 from http import server
 from threading import Condition
 
@@ -10,11 +11,7 @@ import io
 
 PAGE = """\
 <html>
-<head>
-<title>picamera MJPEG streaming demo</title>
-</head>
 <body>
-<h1>PiCamera MJPEG Streaming Demo</h1>
 <img src="stream.mjpg" width="640" height="480" />
 </body>
 </html>
@@ -85,7 +82,8 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     daemon_threads = True
 
 
-with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+with picamera.PiCamera(resolution='640x480', framerate=40) as camera:
+    log.info("start streaming camera")
     output = StreamingOutput()
     camera.start_recording(output, format='mjpeg')
     try:
