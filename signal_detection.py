@@ -2,11 +2,13 @@
 """signal detection"""
 import logging as log
 import os
+
 import cv2 as cv
 import numpy as np
-from skimage import measure
-from imutils import resize, grab_contours
+from imutils import grab_contours, resize
+
 import prediction
+from skimage import measure
 from videocaptureasync import VideoCaptureAsync
 
 VID = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_40_ss_auto.h264')

@@ -1,8 +1,9 @@
 # file: videocaptureasync.py
 import logging
 import socketserver
-from threading import Condition
 from http import server
+from threading import Condition
+
 import isort.__main__
 import picamera
 import io

@@ -1,5 +1,6 @@
 import socket
 import time
+
 import picamera
 
 # Connect a client socket to my_server:8000 (change my_server to the

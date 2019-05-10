@@ -1,7 +1,9 @@
-import numpy as np
-import cv2 as cv
-from matplotlib import pyplot as plt
 import logging as log
+
+import cv2 as cv
+import numpy as np
+
+from matplotlib import pyplot as plt
 
 log.basicConfig(level=log.DEBUG)
 log.info("program started")

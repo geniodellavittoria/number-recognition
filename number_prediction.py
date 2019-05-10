@@ -1,4 +1,5 @@
 import cv2 as cv
+
 from keras.models import load_model
 
 model = load_model(r'.\\mnist_trained_model.h5')

@@ -1,8 +1,9 @@
 # file: videocaptureasync.py
-import threading
-import logging as log
-from time import sleep
 import datetime
+import logging as log
+import threading
+from time import sleep
+
 import cv2
 from picamera import PiCamera
 
