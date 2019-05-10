@@ -1,22 +1,19 @@
+import datetime
 from picamera import PiCamera
 from time import sleep
-import datetime
+from videocaptureasync import VideoCaptureAsync
 
-camera = PiCamera()
+cam = VideoCaptureAsync()
 
 
 def main():
-    camera.rotation = 180
-    camera.resolution = (720, 480)
-    camera.framerate = 15
-    camera.start_preview()
-    time = datetime.time
-    camera.start_recording('video_' + time + '.h264')
+    frame_rate = 50
+    cam.cap.start_recording('video_' + frame_rate + '.h264')
     for i in range(5):
         print(i)
         sleep(1)
-    camera.stop_recording()
-    camera.stop_preview()
+    cam.cap.stop_recording()
+    cam.cap.stop_preview()
 
 
 if __name__ == "__main__":

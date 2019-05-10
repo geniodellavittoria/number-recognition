@@ -4,29 +4,31 @@ import logging as log
 from time import sleep
 import datetime
 import cv2
-# from picamera import PiCamera
+from picamera import PiCamera
 
 
 class VideoCaptureAsync:
-    def __init__(self, src=0):
-        path = 'C:/Users/tbolz/Desktop/videos/video_40_ss_auto.h264'
-        log.info("init with"+path)
-        self.cap = cv2.VideoCapture(path)
+    # def __init__(self, src=0):
+        # path = 'C:/Users/tbolz/Desktop/videos/video_40_ss_auto.h264'
+        # log.info("init with"+path)
+        # self.cap = cv2.VideoCapture(path)
+        # self.src = src
+        # self.grabbed, self.frame = self.cap.read()
+        # self.started = False
+        # self.read_lock = threading.Lock()
+
+    def __init__(self, src=0, width=1280, height=720):
         self.src = src
+        self.cap = PiCamera()
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.cap.framerate = 50
         self.grabbed, self.frame = self.cap.read()
         self.started = False
         self.read_lock = threading.Lock()
-    # def __init__(self, src=0, width=1280, height=720):
-    #     self.src = src
-    #     self.cap = PiCamera()
-    #     self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-    #     self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    #     self.grabbed, self.frame = self.cap.read()
-    #     self.started = False
-    #     self.read_lock = threading.Lock()
 
-    # def set(self, var1, var2):
-    #     self.cap.set(var1, var2)
+    def set(self, var1, var2):
+        self.cap.set(var1, var2)
 
     def start(self):
         if self.started:

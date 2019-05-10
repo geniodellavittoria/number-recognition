@@ -9,7 +9,7 @@ from imutils import resize, grab_contours
 import prediction
 from videocaptureasync import VideoCaptureAsync
 
-VID = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_30_ss_auto.h264')
+VID = cv.VideoCapture('C:/Users/tbolz/Desktop/videos/video_40_ss_auto.h264')
 CAP = VideoCaptureAsync('C:/Users/tbolz/Desktop/videos/video_40_ss_auto.h264')
 
 
@@ -111,9 +111,11 @@ def video():
             if frame is None:
                 log.error("no frame")
                 cleanup()
-            # image = find_contours(frame.copy())
-            # cv.imshow("el Image", image)
-            detect_portal(frame.copy())
+            image = find_contours(frame.copy())
+            cv.imshow("el Image", image)
+
+            cv.waitKey(0)
+            # detect_portal(frame.copy())
             key = cv.waitKey(1) & 0xFF
 
             # if the `q` key was pressed, break from the loop
@@ -140,7 +142,6 @@ def cam():
             image = find_contours(frame.copy())
             cv.imshow("el Image", image)
             key = cv.waitKey(1) & 0xFF
-
             # if the `q` key was pressed, break from the loop
             if key == ord("q"):
                 cleanup()
@@ -168,35 +169,21 @@ def main():
 
 
 def detect_portal(frame):
-    frame_resized = resize(frame.copy(), width=500)
-    grayimg = cv.cvtColor(frame_resized, cv.COLOR_BGR2GRAY)
-    blurred = cv.GaussianBlur(grayimg, (7, 7), 0)
-    thresh = cv.threshold(blurred, 200, 255, cv.THRESH_BINARY)[1],
-    cv.waitKey(0)
-    thresh = cv.erode(thresh, None, iterations=2)
-    thresh = cv.dilate(thresh, None, iterations=4)
-    # perform a connected component analysis on the thresholded
-    # image, then initialize a mask to store only the "large"
-    # components
-    labels = measure.label(thresh, neighbors=8, background=0)
-    mask = np.zeros(thresh.shape, dtype="uint8")
-
-    # loop over the unique components
-    for label in np.unique(labels):
-            # if this is the background label, ignore it
-        if label == 0:
-            continue
-
-        # otherwise, construct the label mask and count the
-        # number of pixels
-        labelMask = np.zeros(thresh.shape, dtype="uint8")
-        labelMask[labels == label] = 255
-        numPixels = cv.countNonZero(labelMask)
-
-        # if the number of pixels in the component is sufficiently
-        # large, then add it to our mask of "large blobs"
-        if numPixels > 300:
-            mask = cv.add(mask, labelMask)
+    img = cv.resize(frame, (400, 500))
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    ret, gray = cv.threshold(gray, 127, 255, 0)
+    gray2 = gray.copy()
+    cv.imshow("gray", gray2)
+    mask = np.zeros(gray.shape, np.uint8)
+    contours, hier = cv.findContours(
+        gray, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+    for cnt in contours:
+        if 1000 < cv.contourArea(cnt) < 5000:
+            log.info(cv.contourArea(cnt))
+            cv.drawContours(img, [cnt], 0, (0, 255, 0), 2)
+            cv.imshow("test", img)
+            cv.waitKey(0)
+            cv.drawContours(mask, [cnt], 0, 255, -1)
 
 
 if __name__ == "__main__":
