@@ -1,13 +1,12 @@
 # file: videocaptureasync.py
-import logging
-import socketserver
+import io
 import logging as log
+import socketserver
 from http import server
 from threading import Condition
 
 import isort.__main__
 import picamera
-import io
 
 PAGE = """\
 <html>
