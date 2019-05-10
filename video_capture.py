@@ -1,6 +1,8 @@
 import datetime
-from picamera import PiCamera
 from time import sleep
+
+from picamera import PiCamera
+
 from videocaptureasync import VideoCaptureAsync
 
 cam = VideoCaptureAsync()
