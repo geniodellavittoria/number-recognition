@@ -3,7 +3,6 @@ import datetime
 import logging as log
 import threading
 from time import sleep
-
 import cv2
 from picamera import PiCamera
 
@@ -23,7 +22,8 @@ class VideoCaptureAsync:
         self.cap = PiCamera()
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-        self.cap.framerate = 50
+        self.cap.framerate = 40
+        self.cap.shutter_speed = 500
         self.grabbed, self.frame = self.cap.read()
         self.started = False
         self.read_lock = threading.Lock()
