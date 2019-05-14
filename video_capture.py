@@ -2,7 +2,6 @@ import datetime
 from time import sleep
 
 from picamera import PiCamera
-
 from videocaptureasync import VideoCaptureAsync
 
 cam = VideoCaptureAsync()
