@@ -6,7 +6,6 @@ from http import server
 from threading import Condition
 
 import isort.__main__
-
 import picamera
 
 PAGE = """\
