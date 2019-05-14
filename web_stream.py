@@ -6,6 +6,7 @@ from http import server
 from threading import Condition
 
 import isort.__main__
+
 import picamera
 
 PAGE = """\
@@ -68,7 +69,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.wfile.write(frame)
                     self.wfile.write(b'\r\n')
             except Exception as e:
-                logging.warning(
+                log.warning(
                     'Removed streaming client %s: %s',
                     self.client_address, str(e))
         else:
@@ -84,7 +85,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
 with picamera.PiCamera(resolution='640x480', framerate=40) as camera:
     log.info("start streaming camera")
     output = StreamingOutput()
-    camera.rotation = 180
+    camera.iso = 800
     camera.start_recording(output, format='mjpeg')
     try:
         address = ('', 8000)
