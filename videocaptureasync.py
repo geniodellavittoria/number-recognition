@@ -8,20 +8,10 @@ from picamera import PiCamera
 
 
 class VideoCaptureAsync:
-    # def __init__(self, src=0):
-        # path = 'C:/Users/tbolz/Desktop/videos/video_40_ss_auto.h264'
-        # log.info("init with"+path)
-        # self.cap = cv2.VideoCapture(path)
-        # self.src = src
-        # self.grabbed, self.frame = self.cap.read()
-        # self.started = False
-        # self.read_lock = threading.Lock()
-
     def __init__(self, src=0, width=1280, height=720):
         self.src = src
         self.cap = PiCamera()
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        self.cap.resolution = (width, height)
         self.cap.framerate = 40
         self.cap.shutter_speed = 500
         self.grabbed, self.frame = self.cap.read()
